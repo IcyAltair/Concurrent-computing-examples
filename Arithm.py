@@ -4,18 +4,18 @@ from mpi4py import MPI
 comm = MPI.COMM_WORLD
 t_start = MPI.Wtime()
 
-N = 1000
+N = 10
 my_N = N // 2
 
 if comm.rank == 0:
-    A = np.arange(N, dtype=np.float64)
+    A = np.arange(N, dtype=np.uint64)
 else:
-    A = np.empty(N, dtype=np.float64)
+    A = np.empty(N, dtype=np.uint64)
 
-my_A = np.empty(my_N, dtype=np.float64)
+my_A = np.empty(my_N, dtype=np.uint64)
 
 
-comm.Scatter([A, MPI.DOUBLE], [my_A, MPI.DOUBLE])
+comm.Scatter([A, MPI.UNSIGNED_LONG_LONG], [my_A, MPI.UNSIGNED_LONG_LONG])
 
 print("After scatter:")
 for r in range(comm.size):
@@ -24,7 +24,7 @@ for r in range(comm.size):
     comm.Barrier()
 
 
-comm.Allgather([my_A, MPI.DOUBLE], [A, MPI.DOUBLE])
+comm.Allgather([my_A, MPI.UNSIGNED_LONG_LONG], [A, MPI.UNSIGNED_LONG_LONG])
 
 print("After allgather:")
 for r in range(comm.size):
